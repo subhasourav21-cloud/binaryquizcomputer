@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Binary Addition &amp; Subtraction Learning App</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fbfaf7;--card:#fff;--ink:#1d1d22;--mut:#5d5d68;--red:#d81f16;--line:#e3ded6;--soft:#fdeceb;--ok:#137a3a;--mono:ui-monospace,Menlo,Consolas,monospace}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#17171a;--card:#202025;--ink:#f0eee9;--mut:#a9a8b2;--red:#ff5b4f;--line:#35353d;--soft:#33201f;--ok:#5ad688}}
+:root[data-theme=dark]{--bg:#17171a;--card:#202025;--ink:#f0eee9;--mut:#a9a8b2;--red:#ff5b4f;--line:#35353d;--soft:#33201f;--ok:#5ad688}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Inter,system-ui,sans-serif;padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)}
+h1,h2,h3{font-family:"Patrick Hand","Comic Sans MS",cursive;color:var(--red);font-weight:400;margin:0 0 .4rem}
+h1{font-size:clamp(2rem,6vw,3.4rem);line-height:1.05}h2{font-size:1.7rem}h3{font-size:1.25rem}
+header{max-width:1100px;margin:0 auto;padding:1.5rem 1rem .5rem;display:flex;gap:1rem;justify-content:space-between;align-items:flex-start}
+header p{margin:.3rem 0 0;color:var(--mut);max-width:60ch}
+nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:2px solid var(--red);display:flex;gap:.25rem;overflow-x:auto;padding:.4rem 1rem;max-width:100%}
+nav button{font:inherit;font-family:"Patrick Hand",cursive;font-size:1.15rem;background:none;border:2px solid transparent;border-radius:8px;padding:.3rem .9rem;color:var(--ink);cursor:pointer;white-space:nowrap}
+nav button[aria-selected=true]{border-color:var(--red);color:var(--red);background:var(--soft)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--red);outline-offset:2px}
+main{max-width:1100px;margin:0 auto;padding:1rem}
+section[hidden]{display:none}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1rem}
+.box{background:var(--card);border:2px solid var(--red);border-radius:12px;padding:1rem}
+.box.plain{border:1px solid var(--line)}
+.box ul,.box ol{padding-left:1.2rem;margin:.4rem 0}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;margin:.5rem 0;font-family:var(--mono);font-size:.92rem}
+th,td{border:1px solid var(--line);padding:.25rem .7rem;text-align:center}
+th{background:var(--soft)}
+code,pre{font-family:var(--mono)}
+pre{background:var(--soft);border-radius:8px;padding:.7rem;margin:.5rem 0;overflow-x:auto;line-height:1.4}
+.res{border:2px solid var(--red);border-radius:8px;padding:.3rem .7rem;display:inline-block;font-family:var(--mono);margin:.3rem 0}
+.bits{display:flex;gap:.4rem;flex-wrap:wrap;margin:.6rem 0}
+.bit{width:3.4rem;text-align:center}
+.bit button{width:100%;font:700 1.4rem var(--mono);background:var(--card);color:var(--ink);border:2px solid var(--red);border-radius:8px;padding:.4rem 0;cursor:pointer}
+.bit button[aria-pressed=true]{background:var(--red);color:var(--card)}
+.bit small{display:block;color:var(--mut);font-family:var(--mono)}
+.bad{color:var(--red)}.good{color:var(--ok)}
+label{display:block;font-weight:600;margin:.4rem 0 .2rem}
+input,select{font:inherit;font-family:var(--mono);padding:.5rem .7rem;border:2px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);width:100%}
+.row{display:flex;gap:.7rem;flex-wrap:wrap;align-items:flex-end}.row>div{flex:1 1 130px}
+.btn{font:600 1rem Inter,sans-serif;background:var(--red);color:#fff;border:0;border-radius:8px;padding:.6rem 1.1rem;cursor:pointer}
+.btn.alt{background:none;color:var(--red);border:2px solid var(--red)}
+.hint{color:var(--mut);font-size:.9rem}
+#msg{min-height:1.5em}
+svg{max-width:100%;height:auto}.w0{stroke:var(--line);stroke-width:2;fill:none}.w1{stroke:var(--red);stroke-width:3.5;fill:none}
+.gate{fill:var(--card);stroke:var(--red);stroke-width:2}svg text{fill:var(--ink);font:14px var(--mono)}
+.tg{min-width:5.5rem}.tg[aria-pressed=true]{background:var(--red);color:#fff}
+footer{max-width:1100px;margin:0 auto;padding:1rem;color:var(--mut);font-size:.85rem}
+@media (prefers-reduced-motion:no-preference){.pop{animation:pop .25s ease-out}@keyframes pop{from{transform:scale(.97);opacity:.5}}}
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>Binary Addition &amp; Subtraction</h1>
+    <p>Learn how computers add and subtract with 0s and 1s: rules, adders, borrowing, 2's complement, then practise with a step-by-step calculator and quiz.</p>
+  </div>
+  <button class="btn alt" id="theme" aria-label="Toggle light and dark theme">Theme</button>
+</header>
+<nav role="tablist" aria-label="Sections">
+  <button role="tab" data-t="basics" aria-selected="true">Basics</button>
+  <button role="tab" data-t="add" aria-selected="false">Addition</button>
+  <button role="tab" data-t="sub" aria-selected="false">Subtraction</button>
+  <button role="tab" data-t="calc" aria-selected="false">Calculator</button>
+  <button role="tab" data-t="quiz" aria-selected="false">Practice</button>
+</nav>
+<main>
+
+<!-- BASICS -->
+<section id="basics">
+<div class="grid">
+  <div class="box"><h2>1. Binary number system</h2>
+    <ul><li>Binary is a base-2 system that uses only two digits: 0 and 1.</li>
+    <li>Each position has a value equal to a power of 2.</li></ul>
+    <p class="hint">Tap the bits to build a number:</p>
+    <div class="bits" id="bits"></div>
+    <pre id="expand"></pre>
+  </div>
+  <div class="box"><h2>2. Important terms</h2>
+    <ul>
+      <li><b>Bit:</b> a binary digit (0 or 1).</li>
+      <li><b>MSB:</b> Most Significant Bit (leftmost bit).</li>
+      <li><b>LSB:</b> Least Significant Bit (rightmost bit).</li>
+      <li><b>Carry:</b> value transferred to the next higher bit in addition.</li>
+      <li><b>Borrow:</b> value taken from the next higher bit in subtraction.</li>
+    </ul>
+    <h3>Convert decimal to binary</h3>
+    <div class="row"><div><input id="d2b" type="number" min="0" max="65535" value="45" aria-label="Decimal number"></div></div>
+    <p><span class="res" id="d2bOut"></span></p>
+  </div>
+</div>
+</section>
+
+<!-- ADDITION -->
+<section id="add" hidden>
+<div class="grid">
+  <div class="box"><h2>3. Binary addition</h2>
+    <ul><li>Add bits from right to left (LSB to MSB).</li>
+    <li>If the sum is 2 or more, write the result bit and carry 1 to the next column.</li></ul>
+    <h3>Basic addition rules</h3><div class="scroll" id="tHalf"></div>
+    <h3>With carry (three-bit addition)</h3><div class="scroll" id="tFull"></div>
+  </div>
+  <div class="box"><h2>5. Addition algorithm</h2>
+    <ol><li>Align numbers by LSB.</li><li>Add bits from right to left.</li><li>Use the addition rules.</li>
+    <li>Write the result bit and carry (if any).</li><li>Continue until all bits are added.</li>
+    <li>If a carry remains after the MSB, write it at the beginning.</li></ol>
+    <h2>4. Examples</h2>
+    <b>Example 1</b>
+<pre>  1 0 1 1
++ 0 1 1 0
+---------
+1 0 0 0 1</pre>
+    <ol><li>1 + 0 = 1</li><li>1 + 1 = 0, carry 1</li><li>0 + 1 + 1 = 0, carry 1</li><li>1 + 0 + 1 = 0, carry 1</li><li>Write final carry 1</li></ol>
+    <span class="res">1011₂ + 0110₂ = 10001₂</span>
+    <p><b>Example 2</b> &nbsp;1101 + 1011 = 11000</p>
+    <p>Check in decimal: 1101₂ = 13, 1011₂ = 11, 13 + 11 = 24, and 11000₂ = 24 ✓</p>
+  </div>
+  <div class="box"><h2>6. Half adder and full adder</h2>
+    <h3>Half adder (adds 2 bits)</h3><p><code>S = A ⊕ B</code><br><code>C = A · B</code></p><div class="scroll" id="tHA"></div>
+    <h3>Full adder (adds 3 bits)</h3>
+    <p><code>S = A ⊕ B ⊕ Cin</code><br><code>Cout = AB + Cin(A ⊕ B)</code><br><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= AB + ACin + BCin</code></p><div class="scroll" id="tFA"></div>
+    <p class="hint">Chaining full adders (Cout into the next Cin) builds an n-bit adder, which is what a CPU's ALU does.</p>
+  </div>
+  <div class="box"><h2>Full adder lab</h2>
+    <p>Switch the inputs and follow the signal through the gates. Red wires carry a 1.</p>
+    <div class="row"><div style="flex:0 0 auto"><button class="btn alt tg" id="faA" aria-pressed="false"></button></div>
+    <div style="flex:0 0 auto"><button class="btn alt tg" id="faB" aria-pressed="false"></button></div>
+    <div style="flex:0 0 auto"><button class="btn alt tg" id="faC" aria-pressed="false"></button></div></div>
+    <div class="scroll"><svg viewBox="0 0 570 200" role="img" aria-label="Full adder built from two XOR gates, two AND gates and one OR gate" width="570">
+    <path data-w="A" d="M40 30H140M95 30V100H140"/><path data-w="B" d="M40 50H140M75 50V120H140"/>
+    <path data-w="x" d="M200 40H245V30H290M245 40V100H290"/><path data-w="C" d="M40 180H265V50H290M265 180V120H290"/>
+    <path data-w="a1" d="M200 110H225V160H380V135H400"/><path data-w="a2" d="M350 110H375V115H400"/>
+    <path data-w="S" d="M350 40H430"/><path data-w="Co" d="M460 125H500"/>
+    <rect class="gate" x="140" y="20" width="60" height="40" rx="6"/><rect class="gate" x="140" y="90" width="60" height="40" rx="6"/>
+    <rect class="gate" x="290" y="20" width="60" height="40" rx="6"/><rect class="gate" x="290" y="90" width="60" height="40" rx="6"/>
+    <rect class="gate" x="400" y="105" width="60" height="40" rx="6"/>
+    <text x="152" y="45">XOR</text><text x="152" y="115">AND</text><text x="302" y="45">XOR</text><text x="302" y="115">AND</text><text x="422" y="130">OR</text>
+    <text x="4" y="34">A</text><text x="4" y="54">B</text><text x="4" y="184">Cin</text>
+    <text x="436" y="44" id="faS"></text><text x="504" y="129" id="faCo"></text></svg></div>
+    <p><code id="faRow"></code></p>
+    <p class="hint">S = A ⊕ B ⊕ Cin. Cout = AB + Cin(A ⊕ B).</p>
+  </div>
+  <div class="box plain"><h2>7. Common addition mistakes</h2>
+    <ol><li>Thinking 1 + 1 = 1 (incorrect). Correct: 1 + 1 = 10.</li>
+    <li>Forgetting to include the carry.</li>
+    <li>Not aligning numbers from the right.</li>
+    <li>Ignoring the final carry.</li></ol>
+  </div>
+  <div class="box plain"><h2>8. Addition overflow</h2>
+    <ul><li>In an n-bit unsigned system, the maximum value is 2ⁿ − 1.</li>
+    <li>If the result exceeds this, an overflow occurs.</li></ul>
+<pre>  1 1 1 1   (15)
++ 0 0 0 1   (1)
+---------
+1 0 0 0 0   (needs 5 bits)</pre>
+    <p>In 4 bits the stored result is <b>0000</b> (overflow carry = 1).</p>
+  </div>
+</div>
+</section>
+
+<!-- SUBTRACTION -->
+<section id="sub" hidden>
+<div class="grid">
+  <div class="box"><h2>9. Binary subtraction</h2>
+    <ul><li>Subtract bits from right to left.</li><li>If the top bit is smaller, borrow 1 from the next higher bit.</li>
+    <li>A borrowed 1 is equivalent to 10₂ (that is, 2).</li></ul>
+    <h3>Basic subtraction rules</h3><div class="scroll" id="tSub"></div>
+    <h2>12. Subtraction algorithm</h2>
+    <ol><li>Align numbers by LSB.</li><li>Subtract bits from right to left.</li><li>If the top bit is smaller, borrow 1 from the next higher bit (10₂).</li>
+    <li>Write the difference bit.</li><li>Continue until all bits are processed.</li></ol>
+  </div>
+  <div class="box"><h2>10. Subtraction examples</h2>
+    <b>Example 1 (no borrow)</b>
+<pre>  1 1 0 1
+- 0 1 0 1
+---------
+  1 0 0 0</pre>
+    <p>Check: 1101₂ = 13, 0101₂ = 5, 13 − 5 = 8, 1000₂ = 8 ✓</p>
+    <b>Example 2 (with borrow)</b>
+<pre>  1 0 1 0
+- 0 0 1 1
+---------
+  0 1 1 1</pre>
+    <p>Check: 1010₂ = 10, 0011₂ = 3, 10 − 3 = 7, 0111₂ = 7 ✓</p>
+  </div>
+  <div class="box"><h2>11. Borrow propagation</h2>
+    <p>Example: 10000₂ − 00001₂. The borrow ripples through every zero until it reaches the leading 1.</p>
+<pre>  1 0 0 0 0
+- 0 0 0 0 1
+-----------
+  0 1 1 1 1</pre>
+    <p>Check: 10000₂ = 16, 00001₂ = 1, 16 − 1 = 15, 01111₂ = 15 ✓</p>
+  </div>
+  <div class="box"><h2>14. 1's and 2's complement</h2>
+    <h3>1's complement</h3><p>Change every bit (0 ↔ 1). Example: 10110010 → 01001101</p>
+    <h3>2's complement</h3><ol><li>Find the 1's complement.</li><li>Add 1.</li></ol>
+<pre>10110010
+1's comp: 01001101
+        + 00000001
+        ----------
+2's comp: 01001110</pre>
+    <div class="row"><div><label for="cin">Try your own bits</label><input id="cin" value="10110010" maxlength="16" inputmode="numeric"></div></div>
+    <pre id="cout"></pre>
+  </div>
+  <div class="box"><h2>Signed numbers (4-bit 2's complement)</h2>
+    <p>The MSB is the sign bit: 0 means positive or zero, 1 means negative. With n bits the range is −2ⁿ⁻¹ to 2ⁿ⁻¹ − 1, so −8 to 7 for 4 bits.</p>
+    <div class="scroll" id="tSigned"></div>
+    <p>To negate a number, find its 2's complement. Signed overflow happens when two positives give a negative, or two negatives give a positive: 0111 + 0001 = 1000, which is −8 instead of +8.</p>
+  </div>
+  <div class="box"><h2>13. Subtraction using 2's complement</h2>
+    <p>A − B can be performed as A + (2's complement of B).</p>
+    <b>Example: 7 − 3 using 4 bits</b>
+<pre>7 = 0111      3 = 0011
+1's complement of 3 = 1100
+2's complement of 3 = 1101
+
+  0 1 1 1   (7)
++ 1 1 0 1   (2's comp of 3)
+---------
+1 0 1 0 0   discard the carry
+  0 1 0 0   = 4</pre>
+    <p class="hint">If there is no carry out, the answer is negative and stored in 2's complement form.</p>
+  </div>
+</div>
+</section>
+
+<!-- CALCULATOR -->
+<section id="calc" hidden>
+<div class="box">
+  <h2>Step-by-step calculator</h2>
+  <div class="row">
+    <div><label for="a">Number A (binary)</label><input id="a" value="1011" inputmode="numeric" maxlength="24"></div>
+    <div style="flex:0 0 130px"><label for="op">Operation</label><select id="op"><option value="add">A + B</option><option value="sub">A − B</option></select></div>
+    <div><label for="b">Number B (binary)</label><input id="b" value="0110" inputmode="numeric" maxlength="24"></div>
+    <div style="flex:0 0 auto"><button class="btn" id="go">Calculate</button></div>
+  </div>
+  <p id="msg" class="bad" role="alert"></p>
+  <div id="out" class="scroll"></div>
+  <div id="ripple" class="box plain" style="margin:1rem 0"></div>
+  <button class="btn alt" id="srv">Verify with Python / C++ backend</button>
+  <p class="hint" id="srvOut">Run <code>python backend.py</code> and open http://localhost:5000 to enable the backend check (it calls the compiled C++ engine).</p>
+</div>
+</section>
+
+<!-- PRACTICE -->
+<section id="quiz" hidden>
+<div class="box">
+  <h2>Practice</h2>
+  <div class="row"><div style="flex:0 0 130px"><label for="qw">Bit width</label><select id="qw"><option>4</option><option>6</option><option>8</option></select></div>
+  <div style="flex:0 0 190px"><label for="qk">Topic</label><select id="qk"><option value="mix">Mixed</option><option value="add">Addition</option><option value="sub">Subtraction</option><option value="comp">2's complement</option><option value="d2b">Decimal to binary</option></select></div></div>
+  <p id="qtext" style="font:700 1.3rem var(--mono)"></p>
+  <div class="row"><div><input id="qin" placeholder="Type your binary answer" inputmode="numeric" aria-label="Your answer"></div>
+  <div style="flex:0 0 auto"><button class="btn" id="qcheck">Check</button> <button class="btn alt" id="qnext">New question</button></div></div>
+  <p id="qfb" role="status"></p><pre id="qwhy" hidden></pre>
+  <p>Score: <b id="score">0 / 0</b> &nbsp; Streak: <b id="streak">0</b> (best <span id="best">0</span>)</p>
+</div>
+</section>
+</main>
+<footer>Frontend: HTML, CSS and JavaScript. Backend: Python (Flask) calling a C++ engine. The page also works offline with its built-in JavaScript engine.</footer>
+
+<script>
+"use strict";
+const $=s=>document.querySelector(s), pad=(s,n)=>s.padStart(n,"0");
+const isBin=s=>/^[01]+$/.test(s);
+const strip=s=>s.replace(/^0+(?=.)/,"");
+const flip=s=>[...s].map(c=>c==="0"?"1":"0").join("");
+function inc(s){let r="",k=1;for(let i=s.length-1;i>=0;i--){const t=+s[i]+k;r=(t%2)+r;k=t>>1}return r}
+function addBin(a,b){const n=Math.max(a.length,b.length);a=pad(a,n);b=pad(b,n);let r="",k=0;const st=[];
+  for(let i=n-1;i>=0;i--){const x=+a[i],y=+b[i],s=x+y+k;r=(s%2)+r;st.push(`Bit ${n-i}: ${x} + ${y} + ${k} = ${s%2}, carry ${s>>1}`);k=s>>1}
+  return{a,b,r,k,st,n}}
+function subBin(a,b){const n=Math.max(a.length,b.length);a=pad(a,n);b=pad(b,n);let r="",k=0;const st=[];
+  for(let i=n-1;i>=0;i--){const x=+a[i],y=+b[i];let d=x-y-k,bo=0;if(d<0){d+=2;bo=1}
+    r=d+r;st.push(`Bit ${n-i}: ${x} - ${y} - ${k} = ${d}, borrow ${bo}`);k=bo}
+  return{a,b,r,k,st,n}}
+
+/* tabs */
+document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{
+  document.querySelectorAll("nav button").forEach(x=>x.setAttribute("aria-selected",x===b));
+  document.querySelectorAll("main>section").forEach(s=>s.hidden=s.id!==b.dataset.t);
+  window.scrollTo(0,0)});
+$("#theme").onclick=()=>{const r=document.documentElement,dark=getComputedStyle(r).getPropertyValue("--bg").trim()==="#17171a";r.dataset.theme=dark?"light":"dark"};
+
+/* truth tables */
+function table(h,rows){return`<table><tr>${h.map(x=>`<th>${x}</th>`).join("")}</tr>${rows.map(r=>`<tr>${r.map(x=>`<td>${x}</td>`).join("")}</tr>`).join("")}</table>`}
+const two=[],three=[];
+for(let a=0;a<2;a++)for(let b=0;b<2;b++)two.push([a,b,a^b,a&b]);
+for(let a=0;a<2;a++)for(let b=0;b<2;b++)for(let c=0;c<2;c++){const s=a+b+c;three.push([a,b,c,s%2,s>>1])}
+$("#tHalf").innerHTML=table(["A","B","Sum","Carry"],two);
+$("#tHA").innerHTML=table(["A","B","S","C"],two);
+$("#tFull").innerHTML=$("#tFA").innerHTML=table(["A","B","Cin","Sum","Cout"],three);
+$("#tFA").innerHTML=table(["A","B","Cin","S","Cout"],three);
+$("#tSub").innerHTML=table(["A","B","Difference","Borrow"],[[0,0,0,0],[1,0,1,0],[1,1,0,0],[0,1,1,1]]);
+
+/* number system widget */
+const N=6,state=Array(N).fill(0);
+function drawBits(){
+  $("#bits").innerHTML=state.map((v,i)=>`<div class="bit"><button aria-pressed="${!!v}" aria-label="Bit for 2 to the power ${N-1-i}" data-i="${i}">${v}</button><small>2<sup>${N-1-i}</sup></small></div>`).join("");
+  document.querySelectorAll("#bits button").forEach(b=>b.onclick=()=>{state[+b.dataset.i]^=1;drawBits()});
+  const parts=state.map((v,i)=>`${v}(${2**(N-1-i)})`),total=state.reduce((t,v,i)=>t+v*2**(N-1-i),0);
+  const on=state.map((v,i)=>v?2**(N-1-i):null).filter(x=>x!==null);
+  $("#expand").textContent=`${state.join("")}₂ = ${parts.join(" + ")}\n= ${on.length?on.join(" + "):"0"} = ${total}₁₀`}
+drawBits();
+function d2b(){const v=parseInt($("#d2b").value,10);$("#d2bOut").textContent=isNaN(v)||v<0?"Enter a whole number 0 or more":`${v}₁₀ = ${v.toString(2)}₂`}
+$("#d2b").oninput=d2b;d2b();
+
+/* complement widget */
+function comp(){const s=$("#cin").value.trim();
+  $("#cout").textContent=isBin(s)?`Original:     ${s}\n1's comp:     ${flip(s)}\n+1:           ${pad("1",s.length)}\n2's comp:     ${inc(flip(s))}`:"Enter 0s and 1s only."}
+$("#cin").oninput=comp;comp();
+
+/* calculator */
+function row(l,s,w){return l.padEnd(6)+s.padStart(w)}
+function calc(){
+  const a=$("#a").value.trim(),b=$("#b").value.trim(),op=$("#op").value,m=$("#msg");
+  if(!isBin(a)||!isBin(b)){m.textContent="Use only the digits 0 and 1 in both numbers.";$("#out").innerHTML="";$("#ripple").innerHTML="";return}
+  m.textContent="";
+  const A=parseInt(a,2),B=parseInt(b,2);let h="";
+  if(op==="add"){
+    const R=addBin(a,b),res=R.k?"1"+R.r:R.r,w=R.n+1;
+    h=`<pre>${row("",pad(R.a,w),w)}\n${row("+",pad(R.b,w),w)}\n${"-".repeat(6+w)}\n${row("",res,w)}</pre>`+
+      `<b>Steps (right to left)</b><ol>${R.st.map(s=>`<li>${s}</li>`).join("")}${R.k?"<li>Write the final carry 1</li>":""}</ol>`+
+      `<span class="res">${a}₂ + ${b}₂ = ${res}₂</span><p>Check in decimal: ${A} + ${B} = ${A+B}, and ${res}₂ = ${parseInt(res,2)} ${A+B===parseInt(res,2)?'<span class="good">✓</span>':'<span class="bad">✗</span>'}</p>`+
+      (R.k?`<p class="hint">Carry out of the MSB: in a ${R.n}-bit unsigned register this is an overflow, and only ${R.r} would be stored.</p>`:"")
+  }else{
+    const R=subBin(a,b),n=R.n,w=n;
+    h=`<pre>${row("",R.a,w)}\n${row("-",R.b,w)}\n${"-".repeat(6+w)}\n${row("",R.r,w)}</pre>`+
+      `<b>Method 1: borrowing (right to left)</b><ol>${R.st.map(s=>`<li>${s}</li>`).join("")}</ol>`;
+    const C=inc(flip(R.b)),S=addBin(R.a,C);
+    if(R.k){h+=`<p class="bad">A borrow is left over after the MSB, so A &lt; B and the answer is negative.</p>`}
+    h+=`<b>Method 2: 2's complement (${n} bits)</b>`+
+       `<pre>B         = ${R.b}\n1's comp  = ${flip(R.b)}\n2's comp  = ${C}\nA + 2's B = ${R.a} + ${C} = ${S.k?"1":"0"} ${S.r}${S.k?"   (discard the carry)":"   (no carry out: negative)"}</pre>`;
+    let ans;
+    if(S.k){ans=strip(S.r);h+=`<span class="res">${a}₂ − ${b}₂ = ${ans}₂</span>`}
+    else{const mag=strip(inc(flip(S.r)));ans="-"+mag;h+=`<span class="res">${a}₂ − ${b}₂ = −${mag}₂</span><p>Stored in ${n} bits as ${S.r} (2's complement form).</p>`}
+    const dec=A-B,got=S.k?parseInt(S.r,2):-parseInt(inc(flip(S.r)),2);
+    h+=`<p>Check in decimal: ${A} − ${B} = ${dec}, binary answer = ${got} ${dec===got?'<span class="good">✓</span>':'<span class="bad">✗</span>'}</p>`;
+  }
+  const o=$("#out");o.innerHTML=h;o.classList.remove("pop");void o.offsetWidth;o.classList.add("pop");ripple(op,a,b);
+}
+$("#go").onclick=calc;["a","b"].forEach(i=>$("#"+i).addEventListener("keydown",e=>{if(e.key==="Enter")calc()}));
+$("#op").onchange=calc;calc();
+
+/* backend check */
+$("#srv").onclick=async()=>{
+  const a=$("#a").value.trim(),b=$("#b").value.trim(),op=$("#op").value,o=$("#srvOut");
+  if(!isBin(a)||!isBin(b)){o.textContent="Enter valid binary numbers first.";return}
+  try{
+    const r=await fetch(`/api/calc?op=${op}&a=${a}&b=${b}`);
+    if(!r.ok)throw new Error((await r.json()).error||r.status);
+    const d=await r.json(),mine=op==="add"?addBin(a,b):subBin(a,b),js=op==="add"&&mine.k?"1"+mine.r:mine.r;
+    o.innerHTML=`${d.engine} engine says <b>${d.result}</b>${op==="sub"&&d.final?" (final borrow 1, so A &lt; B)":""}. Browser engine: <b>${js}</b> ${d.result===js?'<span class="good">match ✓</span>':'<span class="bad">mismatch ✗</span>'}`;
+  }catch(e){o.textContent="Backend not reachable. Start it with: python backend.py, then open http://localhost:5000."}
+};
+
+/* full adder lab */
+const fa={A:0,B:0,C:0};
+function drawFA(){const {A,B,C}=fa,x=A^B,a1=A&B,a2=x&C,S=x^C,Co=a1|a2,v={A,B,C,x,a1,a2,S,Co};
+  document.querySelectorAll("[data-w]").forEach(p=>p.setAttribute("class","w"+v[p.dataset.w]));
+  for(const k of ["A","B","C"]){const b=$("#fa"+k);b.textContent=`${k==="C"?"Cin":k} = ${v[k]}`;b.setAttribute("aria-pressed",!!v[k])}
+  $("#faS").textContent="S="+S;$("#faCo").textContent="Cout="+Co;
+  $("#faRow").textContent=`${A} + ${B} + ${C} = ${A+B+C}, binary ${Co}${S}`}
+["A","B","C"].forEach(k=>$("#fa"+k).onclick=()=>{fa[k]^=1;drawFA()});drawFA();
+
+/* signed table */
+(()=>{const r=[],b=(n)=>pad(n.toString(2),4);for(let i=0;i<8;i++)r.push([b(i),i,i,b(i+8),i+8,i-8]);
+  $("#tSigned").innerHTML=table(["Bits","Unsigned","Signed","Bits","Unsigned","Signed"],r)})();
+
+/* ripple visualizer */
+var rt=null;
+function ripple(op,a,b){
+  clearInterval(rt);const box=$("#ripple"),add=op==="add",R=(add?addBin:subBin)(a,b),n=R.n,cols=[];let k=0;
+  for(let j=0;j<n;j++){const x=+R.a[n-1-j],y=+R.b[n-1-j];let bit,co;
+    if(add){const t=x+y+k;bit=t%2;co=t>>1}else{let d=x-y-k;co=0;if(d<0){d+=2;co=1}bit=d}
+    cols.push({x,y,ci:k,bit,co});k=co}
+  const nm=add?"carry":"borrow";
+  box.innerHTML=`<h3>Watch the ${nm} ripple</h3><div class="row"><div style="flex:0 0 auto"><button class="btn alt" id="rp">Play</button></div><div><input type="range" id="rs" min="0" max="${n}" value="0" aria-label="Column step"></div></div><div class="scroll" id="rv"></div><p class="hint" id="rn"></p>`;
+  const draw=s=>{const H=[],C=[],X=[],Y=[],Z=[];
+    if(add){H.push("<td></td>");C.push("<td></td>");X.push("<td></td>");Y.push("<td></td>");Z.push(`<td>${s===n&&k?1:""}</td>`)}
+    for(let j=n-1;j>=0;j--){const c=cols[j],st=j===s-1?' style="background:var(--soft);outline:2px solid var(--red)"':"";
+      C.push(`<td${st}>${j<=s?c.ci:""}</td>`);X.push(`<td${st}>${c.x}</td>`);Y.push(`<td${st}>${c.y}</td>`);Z.push(`<td${st}>${j<s?c.bit:""}</td>`)}
+    $("#rv").innerHTML=`<table><tr><th>${nm} in</th>${C.join("")}</tr><tr><th>A</th>${X.join("")}</tr><tr><th>${add?"+":"−"} B</th>${Y.join("")}</tr><tr><th>Result</th>${Z.join("")}</tr></table>`;
+    const c=cols[s-1];$("#rn").textContent=s===0?"Press Play or drag the slider to go one column at a time, from the LSB.":
+      `Column ${s} from the right: ${c.x} ${add?"+":"−"} ${c.y} ${add?"+":"−"} ${c.ci} gives bit ${c.bit}, ${nm} ${c.co}.`+(s===n?(add?(k?" The final carry becomes the leading 1.":" No carry is left."):(k?" A borrow is left over, so A < B.":" No borrow is left.")):"")};
+  $("#rp").onclick=()=>{clearInterval(rt);let s=0;$("#rs").value=0;draw(0);rt=setInterval(()=>{s++;$("#rs").value=s;draw(s);if(s>=n)clearInterval(rt)},800)};
+  $("#rs").oninput=e=>{clearInterval(rt);draw(+e.target.value)};
+  draw(0)}
+calc();
+
+/* quiz */
+let q,right=0,total=0,streak=0,best=0,answered=false;
+const bw=(n,w)=>pad(n.toString(2),w);
+function newQ(){
+  const w=+$("#qw").value,max=2**w-1,rn=()=>1+Math.floor(Math.random()*max);
+  let k=$("#qk").value;if(k==="mix")k=["add","sub","comp","d2b"][Math.floor(Math.random()*4)];
+  let a=rn(),b=rn();if(k==="sub"&&a<b)[a,b]=[b,a];
+  if(k==="add")q={t:`Add: ${bw(a,w)} + ${bw(b,w)} = ?`,ans:(a+b).toString(2),why:addBin(bw(a,w),bw(b,w)).st.join("\n")+"\nKeep any final carry."};
+  else if(k==="sub")q={t:`Subtract: ${bw(a,w)} − ${bw(b,w)} = ?`,ans:(a-b).toString(2),why:subBin(bw(a,w),bw(b,w)).st.join("\n")};
+  else if(k==="comp"){const t=bw(a,w);q={t:`Find the ${w}-bit 2's complement of ${t}`,ans:inc(flip(t)),exact:w,why:`1's complement: ${flip(t)}\nAdd 1:         ${inc(flip(t))}`}}
+  else{const st=[];let m=a;while(m>0){st.push(`${m} ÷ 2 = ${m>>1} remainder ${m%2}`);m>>=1}q={t:`Convert ${a} to binary`,ans:a.toString(2),why:st.join("\n")+"\nRead the remainders from bottom to top."}}
+  $("#qtext").textContent=q.t;$("#qin").value="";$("#qfb").textContent="";$("#qwhy").hidden=true;answered=false;$("#qin").focus();
+}
+function check(){
+  const v=$("#qin").value.trim(),f=$("#qfb");
+  if(!isBin(v)){f.className="bad";f.textContent="Type your answer using only 0 and 1.";return}
+  if(answered){f.textContent="Already checked. Press New question to continue.";return}
+  answered=true;total++;
+  const ok=q.exact?pad(v,q.exact)===q.ans&&v.length<=q.exact:strip(v)===q.ans;
+  if(ok){right++;streak++;best=Math.max(best,streak)}else streak=0;
+  f.className=ok?"good":"bad";f.textContent=ok?"Correct!":`Not quite. The answer is ${q.ans}. Here is how:`;
+  const w=$("#qwhy");w.hidden=ok;w.textContent=q.why;
+  $("#score").textContent=`${right} / ${total}`;$("#streak").textContent=streak;$("#best").textContent=best;
+}
+$("#qcheck").onclick=check;$("#qnext").onclick=newQ;$("#qw").onchange=$("#qk").onchange=newQ;
+$("#qin").addEventListener("keydown",e=>{if(e.key==="Enter")answered?newQ():check()});
+newQ();
+</script>
+</body>
+</html>
