@@ -5,11 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Binary Addition &amp; Subtraction Learning App</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#fbfaf7;--card:#fff;--ink:#1d1d22;--mut:#5d5d68;--red:#d81f16;--line:#e3ded6;--soft:#fdeceb;--ok:#137a3a;--mono:ui-monospace,Menlo,Consolas,monospace}
-@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#17171a;--card:#202025;--ink:#f0eee9;--mut:#a9a8b2;--red:#ff5b4f;--line:#35353d;--soft:#33201f;--ok:#5ad688}}
-:root[data-theme=dark]{--bg:#17171a;--card:#202025;--ink:#f0eee9;--mut:#a9a8b2;--red:#ff5b4f;--line:#35353d;--soft:#33201f;--ok:#5ad688}
+:root{--bg:#f4f6fb;--card:#fff;--ink:#0f172a;--mut:#586174;--red:#2453d4;--line:#dde3ee;--soft:#eaf0fd;--ok:#0f8a4b;--on:#fff;--mono:ui-monospace,Menlo,Consolas,monospace}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0b1020;--card:#141b2f;--ink:#e8ecf6;--mut:#9aa6c0;--red:#7ea2ff;--line:#26304a;--soft:#1a2542;--ok:#4fd890;--on:#0b1020}}
+:root[data-theme=dark]{--bg:#0b1020;--card:#141b2f;--ink:#e8ecf6;--mut:#9aa6c0;--red:#7ea2ff;--line:#26304a;--soft:#1a2542;--ok:#4fd890;--on:#0b1020}
 *{box-sizing:border-box}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Inter,system-ui,sans-serif;padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)}
@@ -52,15 +52,72 @@ svg{max-width:100%;height:auto}.w0{stroke:var(--line);stroke-width:2;fill:none}.
 .tg{min-width:5.5rem}.tg[aria-pressed=true]{background:var(--red);color:#fff}
 footer{max-width:1100px;margin:0 auto;padding:1rem;color:var(--mut);font-size:.85rem}
 @media (prefers-reduced-motion:no-preference){.pop{animation:pop .25s ease-out}@keyframes pop{from{transform:scale(.97);opacity:.5}}}
+[hidden]{display:none!important}
+body{font-size:15.5px}
+h1,h2,h3{font-family:Inter,system-ui,sans-serif;font-weight:700;color:var(--ink);letter-spacing:-.01em}
+h2{font-size:1.2rem;margin-bottom:.6rem}h3{font-size:.98rem;color:var(--red);margin-top:1rem}
+.brand{display:flex;align-items:center;gap:.65rem;font-weight:700}.brand small{display:block;color:var(--mut);font-weight:500;font-size:.78rem}
+.logo{display:grid;place-items:center;width:2.3rem;height:2.3rem;border-radius:10px;background:var(--red);color:var(--on);font:700 1rem var(--mono)}
+header.bar{max-width:none;background:var(--card);border-bottom:1px solid var(--line);padding:.7rem max(1rem,calc((100% - 1100px)/2));align-items:center;flex-wrap:wrap}
+.bar-r{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap}
+.bar-r .btn{padding:.4rem .8rem;font-size:.88rem}
+.chip{background:var(--soft);color:var(--ink);border-radius:999px;padding:.3rem .8rem;font-size:.85rem}
+.prog{font-size:.82rem;color:var(--mut)}.prog i{display:block;height:5px;border-radius:9px;background:var(--line);margin-top:3px;overflow:hidden;width:110px}
+.prog em{display:block;height:100%;width:20%;background:var(--red);transition:width .3s}
+nav{background:var(--card);border-bottom:1px solid var(--line);padding:.5rem max(1rem,calc((100% - 1100px)/2))}
+nav button{font:600 .92rem Inter,sans-serif;border-radius:999px;padding:.45rem 1rem;color:var(--mut)}
+nav button[aria-selected=true]{background:var(--red);border-color:var(--red);color:var(--on)}
+.box{border:1px solid var(--line);border-radius:14px;box-shadow:0 1px 2px rgba(15,23,42,.05),0 10px 24px -14px rgba(15,23,42,.18)}
+.box.plain{box-shadow:none}
+.res{border:1px solid var(--red);background:var(--soft);border-radius:8px}
+.btn{color:var(--on);border-radius:10px}.btn.alt{color:var(--red);background:transparent;border:1.5px solid var(--red)}
+.tg[aria-pressed=true],.bit button[aria-pressed=true]{color:var(--on)}
+.bit button,input,select{border-radius:10px}
+input:focus,select:focus{border-color:var(--red)}
+#entry{background:radial-gradient(900px 420px at 0 0,var(--soft),transparent 70%)}
+.ewrap{max-width:1050px;margin:0 auto;padding:2rem 1.2rem;display:grid;grid-template-columns:1.1fr .9fr;gap:2.5rem;align-items:center;min-height:100vh}
+.ewrap h1{font-size:clamp(2rem,4.6vw,3rem);line-height:1.1;margin:1.4rem 0 .8rem}
+.ewrap p{color:var(--mut);font-size:1.05rem;max-width:52ch}
+.feat{list-style:none;padding:0;margin:1.2rem 0;display:grid;gap:.5rem}.feat li::before{content:"\2713";color:var(--ok);font-weight:700;margin-right:.6rem}
+.stats{display:flex;gap:2rem;margin-top:1.4rem}.stats b{display:block;font-size:1.7rem}.stats span{color:var(--mut);font-size:.85rem}
+.ecard{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:1.6rem;box-shadow:0 24px 50px -24px rgba(15,23,42,.3)}
+.ecard .btn{width:100%;margin-top:.7rem;padding:.75rem}
+@media (max-width:820px){.ewrap{grid-template-columns:1fr;gap:1.5rem;min-height:0}}
 </style>
 </head>
 <body>
-<header>
+<section id="entry" aria-labelledby="et">
+<div class="ewrap">
   <div>
-    <h1>Binary Addition &amp; Subtraction</h1>
-    <p>Learn how computers add and subtract with 0s and 1s: rules, adders, borrowing, 2's complement, then practise with a step-by-step calculator and quiz.</p>
+    <div class="brand"><span class="logo">01</span><span>BitLab</span></div>
+    <h1 id="et">Master binary addition and subtraction</h1>
+    <p>A structured course with worked examples, step-by-step calculators, a logic-gate lab and adaptive practice.</p>
+    <ul class="feat"><li>Carry and borrow rules, adders, overflow</li><li>1's and 2's complement with signed numbers</li><li>Practice with instant explanations</li></ul>
+    <div class="stats"><div><b>14</b><span>Lessons</span></div><div><b>5</b><span>Interactive labs</span></div><div><b>4</b><span>Practice topics</span></div></div>
   </div>
-  <button class="btn alt" id="theme" aria-label="Toggle light and dark theme">Theme</button>
+  <div class="ecard">
+    <h2>Get started</h2>
+    <label for="ename">Your name</label><input id="ename" maxlength="30" autocomplete="given-name" placeholder="e.g. Priya">
+    <p id="eerr" class="bad" role="alert" style="min-height:1.3em;margin:.3rem 0 0;font-size:.9rem"></p>
+    <label for="elevel">Experience level</label>
+    <select id="elevel"><option>Beginner</option><option>Intermediate</option><option>Advanced</option></select>
+    <label for="efocus">What do you want to learn first?</label>
+    <select id="efocus"><option value="both">Both, from the basics</option><option value="add">Binary addition</option><option value="sub">Binary subtraction</option></select>
+    <button class="btn" id="estart">Start learning</button>
+    <button class="btn alt" id="eguest">Continue as guest</button>
+    <p class="hint" style="font-size:.82rem;margin:.8rem 0 0">Level sets the practice bit width: Beginner 4, Intermediate 6, Advanced 8.</p>
+  </div>
+</div>
+</section>
+<div id="app" hidden>
+<header class="bar">
+  <div class="brand"><span class="logo">01</span><div>BitLab<small>Binary Addition &amp; Subtraction</small></div></div>
+  <div class="bar-r">
+    <div class="prog">Progress <b id="prog">1/5</b><i><em id="pbar"></em></i></div>
+    <span class="chip"><b id="uname"></b> &middot; <span id="ulevel"></span></span>
+    <button class="btn alt" id="theme" aria-label="Toggle light and dark theme">Theme</button>
+    <button class="btn alt" id="exit">Exit</button>
+  </div>
 </header>
 <nav role="tablist" aria-label="Sections">
   <button role="tab" data-t="basics" aria-selected="true">Basics</button>
@@ -127,7 +184,7 @@ footer{max-width:1100px;margin:0 auto;padding:1rem;color:var(--mut);font-size:.8
     <p class="hint">Chaining full adders (Cout into the next Cin) builds an n-bit adder, which is what a CPU's ALU does.</p>
   </div>
   <div class="box"><h2>Full adder lab</h2>
-    <p>Switch the inputs and follow the signal through the gates. Red wires carry a 1.</p>
+    <p>Switch the inputs and follow the signal through the gates. Highlighted wires carry a 1.</p>
     <div class="row"><div style="flex:0 0 auto"><button class="btn alt tg" id="faA" aria-pressed="false"></button></div>
     <div style="flex:0 0 auto"><button class="btn alt tg" id="faB" aria-pressed="false"></button></div>
     <div style="flex:0 0 auto"><button class="btn alt tg" id="faC" aria-pressed="false"></button></div></div>
@@ -257,11 +314,12 @@ footer{max-width:1100px;margin:0 auto;padding:1rem;color:var(--mut);font-size:.8
   <div class="row"><div><input id="qin" placeholder="Type your binary answer" inputmode="numeric" aria-label="Your answer"></div>
   <div style="flex:0 0 auto"><button class="btn" id="qcheck">Check</button> <button class="btn alt" id="qnext">New question</button></div></div>
   <p id="qfb" role="status"></p><pre id="qwhy" hidden></pre>
-  <p>Score: <b id="score">0 / 0</b> &nbsp; Streak: <b id="streak">0</b> (best <span id="best">0</span>)</p>
+  <p>Score: <b id="score">0 / 0</b> &nbsp; Streak: <b id="streak">0</b> (best <span id="best">0</span>) &nbsp; <button class="btn alt" id="qreset" style="padding:.35rem .8rem;font-size:.88rem">Reset score</button></p>
 </div>
 </section>
 </main>
 <footer>Frontend: HTML, CSS and JavaScript. Backend: Python (Flask) calling a C++ engine. The page also works offline with its built-in JavaScript engine.</footer>
+</div>
 
 <script>
 "use strict";
@@ -283,7 +341,7 @@ document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{
   document.querySelectorAll("nav button").forEach(x=>x.setAttribute("aria-selected",x===b));
   document.querySelectorAll("main>section").forEach(s=>s.hidden=s.id!==b.dataset.t);
   window.scrollTo(0,0)});
-$("#theme").onclick=()=>{const r=document.documentElement,dark=getComputedStyle(r).getPropertyValue("--bg").trim()==="#17171a";r.dataset.theme=dark?"light":"dark"};
+$("#theme").onclick=()=>{const r=document.documentElement,dark=getComputedStyle(r).getPropertyValue("--bg").trim()==="#0b1020";r.dataset.theme=dark?"light":"dark"};
 
 /* truth tables */
 function table(h,rows){return`<table><tr>${h.map(x=>`<th>${x}</th>`).join("")}</tr>${rows.map(r=>`<tr>${r.map(x=>`<td>${x}</td>`).join("")}</tr>`).join("")}</table>`}
@@ -415,9 +473,30 @@ function check(){
   const w=$("#qwhy");w.hidden=ok;w.textContent=q.why;
   $("#score").textContent=`${right} / ${total}`;$("#streak").textContent=streak;$("#best").textContent=best;
 }
-$("#qcheck").onclick=check;$("#qnext").onclick=newQ;$("#qw").onchange=$("#qk").onchange=newQ;
+$("#qcheck").onclick=check;
+$("#qreset").onclick=()=>{right=0;total=0;streak=0;best=0;
+  $("#score").textContent="0 / 0";$("#streak").textContent="0";$("#best").textContent="0";newQ();$("#qfb").className="";$("#qfb").textContent="Score reset. Good luck!"};$("#qnext").onclick=newQ;$("#qw").onchange=$("#qk").onchange=newQ;
 $("#qin").addEventListener("keydown",e=>{if(e.key==="Enter")answered?newQ():check()});
 newQ();
+/* entry screen */
+const user={name:"",level:"Beginner",focus:"both"},seen=new Set(["basics"]),LV={Beginner:4,Intermediate:6,Advanced:8};
+function setProg(){$("#prog").textContent=seen.size+"/5";$("#pbar").style.width=seen.size*20+"%"}
+document.querySelectorAll("nav button").forEach(b=>b.addEventListener("click",()=>{seen.add(b.dataset.t);setProg()}));
+function start(guest){
+  const n=$("#ename").value.trim();
+  if(!guest&&!n){$("#eerr").textContent="Please enter your name, or continue as a guest.";$("#ename").focus();return}
+  $("#eerr").textContent="";
+  user.name=guest?"Guest":n;user.level=$("#elevel").value;user.focus=$("#efocus").value;
+  try{localStorage.setItem("bitlab-user",JSON.stringify(user))}catch(e){}
+  $("#entry").hidden=true;$("#app").hidden=false;
+  $("#uname").textContent=user.name;$("#ulevel").textContent=user.level;
+  $("#qw").value=LV[user.level];$("#qk").value=user.focus==="both"?"mix":user.focus;newQ();
+  document.querySelector(`nav button[data-t="${user.focus==="both"?"basics":user.focus}"]`).click();
+  setProg();window.scrollTo(0,0)}
+$("#estart").onclick=()=>start(false);$("#eguest").onclick=()=>start(true);
+$("#ename").addEventListener("keydown",e=>{if(e.key==="Enter")start(false)});
+$("#exit").onclick=()=>{$("#app").hidden=true;$("#entry").hidden=false;$("#ename").focus();window.scrollTo(0,0)};
+try{const u=JSON.parse(localStorage.getItem("bitlab-user")||"null");if(u&&u.name&&u.name!=="Guest"){$("#ename").value=u.name;if(LV[u.level])$("#elevel").value=u.level}}catch(e){}
 </script>
 </body>
 </html>
